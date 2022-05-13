@@ -17,7 +17,7 @@ Project template for STM32F103XB, easy to adaptation to another board, makefile 
 3. [GNU Assembler Language Support](https://marketplace.visualstudio.com/items?itemName=basdp.language-gas-x86).
 
 ### Libs
-[STM32CubeF1](https://github.com/STMicroelectronics/STM32CubeF1)
+1. [STM32CubeF1](https://github.com/STMicroelectronics/STM32CubeF1), not necessary to run the map template.
 
 ## Build Firmware
 Run in a terminal.
