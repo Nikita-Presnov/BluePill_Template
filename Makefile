@@ -11,7 +11,8 @@ STARTUP = Startup
 # Project specific
 SRC_DIR = Src
 INC_DIR = Inc
-OUTPUT_DIR = Bin
+BUILD_DIR = Bin
+OBJ_DIR = Obj
 TARGET ?= firmware.elf
 # Toolchain
 CC = $(TOOLCHAIN_ROOT)arm-none-eabi-gcc
@@ -27,7 +28,6 @@ INCLUDES   = -I$(INC_DIR)
 
 # Vendor sources: Note that files in "Templates" are normally copied into project for customization,
 # but that is not necessary for this simple project.
-# SRC_ASM_FILES += Startup/startup_stm32f103xb.s
 SRC_ASM_FILES += $(STARTUP)/startup_stm32f103xb.s
 SRC_CXX_FILES += $(STARTUP)/system_stm32f1xx.c
 SRC_CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_gpio.c
@@ -51,30 +51,37 @@ LFLAGS = -Wl,--gc-sections -Wl,-T$(LD_SCRIPT) --specs=rdimon.specs
 ###############################################################################
 
 # Unlike the original source, this file throws object files into the correct directory.
-# But you may need to modify it for use outside of linux.
-# I'm not sure if `mkdir -p somedir` will work for Windows. 
-CXX_OBJS = $(patsubst %.c, $(OUTPUT_DIR)/%.o, $(SRC_CXX_FILES))
-ASM_OBJS = $(patsubst %.s, $(OUTPUT_DIR)/%.o, $(SRC_ASM_FILES))
+
+CXX_OBJS = $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(SRC_CXX_FILES:.c=.o)))
+ASM_OBJS = $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(SRC_ASM_FILES:.s=.o)))
 ALL_OBJS = $(ASM_OBJS) $(CXX_OBJS)
+vpath %.c $(sort $(dir $(SRC_CXX_FILES)))
+vpath %.s $(sort $(dir $(SRC_ASM_FILES)))
+
 
 .PHONY: clean
 
-all: $(OUTPUT_DIR)/$(TARGET)
+all: $(BUILD_DIR)/$(TARGET) 
 
-# Compile
-$(CXX_OBJS): $(OUTPUT_DIR)/%.o: %.c
-$(ASM_OBJS): $(OUTPUT_DIR)/%.o: %.s
-$(ALL_OBJS):
-	@echo "[CC] $< -> $@"
-	@mkdir -p $(@D)
+# Compile asm
+$(BUILD_DIR)/$(OBJ_DIR)/%.o: %.s | $(BUILD_DIR) 
+	@echo "[CC] $^ -> $@"
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+# Compile c
+$(BUILD_DIR)/$(OBJ_DIR)/%.o: %.c | $(BUILD_DIR) 
+	@echo "[CC] $^ -> $@"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 # Link
-$(OUTPUT_DIR)/$(TARGET): $(ALL_OBJS)
+$(BUILD_DIR)/$(TARGET): $(ALL_OBJS) 
 	@echo "[LD] $@"
-	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) $(LFLAGS) $(ALL_OBJS) -o $@
 
+# Make directory
+$(BUILD_DIR):
+	@mkdir $@
+	@mkdir $@/$(OBJ_DIR)
 # Clean
 clean:
-	@rm -rfv $(OUTPUT_DIR)
+	@rm -rfv $(BUILD_DIR)
