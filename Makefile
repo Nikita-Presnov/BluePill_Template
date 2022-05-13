@@ -1,4 +1,5 @@
 # Path you your toolchain installation, leave empty if already in system PATH
+# But don't forget to add / or \ at the end 
 TOOLCHAIN_ROOT =
 
 # Path to the STM32 codebase, make sure to update the submodule to get the code
@@ -49,9 +50,9 @@ LFLAGS = -Wl,--gc-sections -Wl,-T$(LD_SCRIPT) --specs=rdimon.specs
 
 ###############################################################################
 
-# This does an in-source build. An out-of-source build that places all object
-# files into a build directory would be a better solution, but the goal was to
-# keep this file very simple.
+# Unlike the original source, this file throws object files into the correct directory.
+# But you may need to modify it for use outside of linux.
+# I'm not sure if `mkdir -p somedir` will work for Windows. 
 CXX_OBJS = $(patsubst %.c, $(OUTPUT_DIR)/%.o, $(SRC_CXX_FILES))
 ASM_OBJS = $(patsubst %.s, $(OUTPUT_DIR)/%.o, $(SRC_ASM_FILES))
 ALL_OBJS = $(ASM_OBJS) $(CXX_OBJS)

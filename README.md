@@ -6,7 +6,7 @@ Project template for STM32F103XB, easy to adaptation to another board, makefile 
 
 ### System
 1. `arm-none-eabi`
-2. `arm-none-eabi-gdb` or `gdb-multiarch`
+2. `arm-none-eabi-gdb` or `gdb-multiarch`(by default, see .vscode/settings.json)
 3. `gcc-multilib`
 4. `openocd`
 5. `make`
@@ -26,11 +26,11 @@ make
 ```
 Support for additional functions will come later (eg `DEBUG` mode).
 
-Under Windows __not tested__.
+Under Windows __not tested__, but after a while, I will slightly transform the mikefile, and then such an opportunity should definitely appear.
 
-Firmware with `firmware.elf` will be in the `Bin` directory.
+Firmware with `firmware.elf` will be in the `Bin` directory, *.bin and *.hex also will be add.
 
-## Controller Firmware
+## Controller flasing
 
 In the future, such functionality will be added to the `openocd` config.
 
