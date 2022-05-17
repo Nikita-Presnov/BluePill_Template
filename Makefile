@@ -4,7 +4,6 @@
 # Path to the STM32 codebase, make sure to update the submodule to get the code
 PERIPH_LIB = PeripheralLib
 CMSIS_ROOT = CMSIS
-STARTUP = Startup
 ###############################################################################
 
 # Project specific
@@ -33,8 +32,6 @@ BIN = $(CP) -O binary -S
 # Project sources
 CXX_FILES = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*/*.c)
 ASM_FILES = $(wildcard $(SRC_DIR)/*.s) $(wildcard $(SRC_DIR)/*/*.s)
-ASM_FILES += $(STARTUP)/startup_stm32f103xb.s
-CXX_FILES += $(STARTUP)/system_stm32f1xx.c
 LD_SCRIPT = STM32F103XB_FLASH.ld
 
 # Project includes
