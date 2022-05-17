@@ -6,6 +6,13 @@
         {
             "label": "make",
             "type": "shell",
+            "command": "DEBUG=1 make",
+            "group": "build",
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "make release",
+            "type": "shell",
             "command": "make",
             "group": "build",
             "problemMatcher": "$gcc"

@@ -24,12 +24,21 @@ Run in a terminal.
 ```bash
 make
 ```
-Support for additional functions will come later (eg `DEBUG` mode).
+For debug mode 
+```bash
+DEBUG=1 make
+```
+Not tested on Windows, but should work.
 
-Under Windows __not tested__, but after a while, I will slightly transform the mikefile, and then such an opportunity should definitely appear.
-
-Firmware with `firmware.elf` will be in the `Bin` directory, *.bin and *.hex also will be add.
-
+Firmware with `firmware.elf` will be in the `Build` directory, *.bin and *.hex also will be add.
+To build .hex
+```bash
+make intel-hex
+```
+To build .bin
+```bash
+make binary
+```
 ## Controller flasing
 
 In the future, such functionality will be added to the `openocd` config.

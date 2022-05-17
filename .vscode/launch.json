@@ -5,9 +5,9 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Cortex Debug",
+            "name": "Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceFolder}/Bin/firmware.elf",
+            "executable": "${workspaceFolder}/Build/firmware.elf",
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",
@@ -16,7 +16,19 @@
             "configFiles": [
                 "${workspaceFolder}/openocd.cfg"
             ],
-            "preLaunchTask": "make"
+            "preLaunchTask": "make debug"
+        },
+        {
+            "name": "Release",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/Build/firmware.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "${workspaceFolder}/openocd.cfg"
+            ],
+            "preLaunchTask": "make release"
         }
     ]
 }

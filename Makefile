@@ -10,7 +10,7 @@ STARTUP = Startup
 # Project specific
 SRC_DIR = Src
 INC_DIR = Inc
-BUILD_DIR = Bin
+BUILD_DIR = Build
 OBJ_DIR = Obj
 TARGET = firmware
 MODEL = STM32F103xB
@@ -113,7 +113,7 @@ $(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).elf
 $(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
 	@echo "[BIN] $@"
 	@$(BIN) $< $@
-	
+
 intel-hex: $(BUILD_DIR)/$(TARGET).hex
 
 binary: $(BUILD_DIR)/$(TARGET).bin
@@ -122,6 +122,7 @@ binary: $(BUILD_DIR)/$(TARGET).bin
 $(BUILD_DIR):
 	@mkdir $@
 	@mkdir $@/$(OBJ_DIR)
+
 # Clean
 clean:
 	@rm -rfv $(BUILD_DIR)
