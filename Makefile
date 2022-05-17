@@ -88,7 +88,7 @@ all: $(BUILD_DIR)/$(TARGET).elf
 -include $(DEPENDS)
 # Compile asm
 $(BUILD_DIR)/$(OBJ_DIR)/%.o: %.s Makefile | $(BUILD_DIR) 
-	@echo "[CC] $<"
+	@echo "[AS] $<"
 	@$(AS) $(CFLAGS) -c $< -o $@
 
 # Compile c
