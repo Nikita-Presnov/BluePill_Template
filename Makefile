@@ -14,17 +14,18 @@ OBJ_DIR = Obj
 TARGET = firmware
 MODEL = STM32F103xB
 MODEL_CORE = cortex-m3
+
 # Toolchain
 ifdef TOOLCHAIN_PATH
-CC = $(TOOLCHAIN_ROOT)/arm-none-eabi-gcc
-AS = $(TOOLCHAIN_ROOT)/arm-none-eabi-gcc -x assembler-with-cpp
-CP = $(TOOLCHAIN_ROOT)/arm-none-eabi-objcopy
-SZ = $(TOOLCHAIN_ROOT)/arm-none-eabi-size
+CC = $(TOOLCHAIN_PATH)/arm-none-eabi-gcc
+AS = $(TOOLCHAIN_PATH)/arm-none-eabi-gcc -x assembler-with-cpp
+CP = $(TOOLCHAIN_PATH)/arm-none-eabi-objcopy
+SZ = $(TOOLCHAIN_PATH)/arm-none-eabi-size -d -G
 else
 CC = arm-none-eabi-gcc
 AS = arm-none-eabi-gcc -x assembler-with-cpp
 CP = arm-none-eabi-objcopy
-SZ = arm-none-eabi-size
+SZ = arm-none-eabi-size -d -G
 endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
@@ -37,7 +38,7 @@ LD_SCRIPT = STM32F103XB_FLASH.ld
 # Project includes
 INCLUDES   = -I$(INC_DIR)
 
-# Vendor sources: Note that files in "Templates" are normally copied into project for customization, but that is not necessary for this simple project.
+# Vendor sources
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_gpio.c
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_tim.c
 
@@ -71,12 +72,10 @@ LFLAGS = -Wl,--gc-sections -Wl,-T$(LD_SCRIPT) --specs=rdimon.specs
 ###############################################################################
 
 # Unlike the original source, this file throws object files into the correct directory.
-
-CXX_OBJS = $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.c=.o)))
-ASM_OBJS = $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(ASM_FILES:.s=.o)))
+OBJECTS  = $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.c=.o)))
+OBJECTS += $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(ASM_FILES:.s=.o)))
 DEPENDS  = $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.c=.d)))
 DEPENDS += $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.s=.d)))
-ALL_OBJS = $(ASM_OBJS) $(CXX_OBJS)
 vpath %.c $(sort $(dir $(CXX_FILES)))
 vpath %.s $(sort $(dir $(ASM_FILES)))
 
@@ -97,9 +96,9 @@ $(BUILD_DIR)/$(OBJ_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 # Link
-$(BUILD_DIR)/$(TARGET).elf: $(ALL_OBJS) 
+$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	@echo "[LD] $@"
-	@$(CC) $(CFLAGS) $(LFLAGS) $(ALL_OBJS) -o $@
+	@$(CC) $(CFLAGS) $(LFLAGS) $(OBJECTS) -o $@
 	@$(SZ) $@
 
 $(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).elf
