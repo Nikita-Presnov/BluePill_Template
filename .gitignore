@@ -2,3 +2,8 @@
 *cortex-debug*
 Bin
 Build
+*.d
+*.o
+*.bin
+*.hex
+*.elf
