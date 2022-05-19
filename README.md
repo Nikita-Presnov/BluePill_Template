@@ -46,4 +46,4 @@ In the future, such functionality will be added to the `openocd` config.
 
 ## Debugging
 
-The above `openocd` uses VS Code with the Cortex-Drbug extension as its IDE. Configs in the commit, all the charms of the register type are available.
+The above `openocd` uses VS Code with the [Cortex-Debug](https://marketplace.visualstudio.com/items?itemName=marus25.cortex-debug) extension as its IDE. Configs in the commit, all the charms of the register type are available.
