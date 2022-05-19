@@ -30,7 +30,8 @@ DEBUG=1 make
 ```
 Not tested on Windows, but should work.
 
-Firmware with `firmware.elf` will be in the `Build` directory, *.bin and *.hex also will be add.
+Firmware with `firmware.elf` will be in the `Build` directory.
+
 To build .hex
 ```bash
 make intel-hex
