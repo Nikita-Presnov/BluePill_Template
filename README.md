@@ -1,6 +1,8 @@
 # STM32F1 Template
 
-Project template for STM32F103XB, easy to adaptation to another board, makefile is used.
+Project template for STM32F103XB with USART, easy to adaptation to another board, makefile is used.
+It was tested for BK3432 UART.
+CSIMS only, not libs.
 
 ## Dependencies
 
