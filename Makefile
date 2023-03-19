@@ -50,7 +50,7 @@ INCLUDES += -I$(CMSIS_ROOT)/Include
 # Compiler Flags
 
 # GCC
-CFLAGS  = -O2 -Wall -Wextra -Warray-bounds
+CFLAGS  = -O2 -Wall -Wextra -Warray-bounds -std=c99
 ifdef DEBUG
 CFLAGS += -g
 endif
@@ -65,6 +65,7 @@ CFLAGS += -mthumb -mlittle-endian -mthumb-interwork
 CFLAGS += -mcpu=$(MODEL_CORE) 
 CFLAGS += -D$(MODEL)
 CFLAGS += $(INCLUDES)
+# CFLAGS += -DUSE_FULL_LL_DRIVER
 
 # Linker Flags
 LFLAGS = -Wl,--gc-sections -Wl,-T$(LD_SCRIPT) --specs=rdimon.specs
@@ -75,7 +76,7 @@ LFLAGS = -Wl,--gc-sections -Wl,-T$(LD_SCRIPT) --specs=rdimon.specs
 OBJECTS  = $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.c=.o)))
 OBJECTS += $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(ASM_FILES:.s=.o)))
 DEPENDS  = $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.c=.d)))
-DEPENDS += $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.s=.d)))
+DEPENDS += $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(ASM_FILES:.s=.d)))
 vpath %.c $(sort $(dir $(CXX_FILES)))
 vpath %.s $(sort $(dir $(ASM_FILES)))
 
@@ -121,4 +122,5 @@ $(BUILD_DIR):
 
 # Clean
 clean:
-	@rm -rfv $(BUILD_DIR)
+#	@rm -rfv $(BUILD_DIR)
+	@rm $(BUILD_DIR)/$(TARGET).* $(OBJECTS) $(DEPENDS)

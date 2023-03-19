@@ -4,5 +4,6 @@
     "files.associations": {
         "*.h": "c"
     },
-    "cortex-debug.gdbPath": "gdb-multiarch"
+    "cortex-debug.gdbPath": "gdb-multiarch",
+    "cortex-debug.variableUseNaturalFormat": false
 }

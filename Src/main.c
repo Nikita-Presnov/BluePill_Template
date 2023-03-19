@@ -2,27 +2,26 @@
 
 int main()
 {
-    // LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOC);
-    // LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM2);
     RCC->APB2ENR |= RCC_APB2ENR_IOPCEN | RCC_APB2ENR_IOPAEN;
     RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
 
     GPIOC->CRH &= ~(GPIO_CRH_MODE13 | GPIO_CRH_CNF13);
-    // GPIOC->CRH |= GPIO_CRH_MODE13_ | 
+    GPIOC->CRH |= GPIO_CRH_MODE13_0;
+    
 
-    // LL_GPIO_SetPinMode(GPIOC,LL_GPIO_PIN_13,LL_GPIO_MODE_OUTPUT);
-    LL_TIM_SetCounterMode(TIM2, LL_TIM_COUNTERMODE_UP);
-    LL_TIM_SetPrescaler(TIM2, PRESCALER - 1);
-    LL_TIM_SetAutoReload(TIM2, AUTORELOAD - 1);
-    LL_TIM_EnableIT_UPDATE(TIM2);
-    LL_TIM_EnableCounter(TIM2);
-    // LL_GPIO_SetOutputPin(GPIOG,LL_GPIO_PIN_13,LL_GPIO_OUTPUT_PUSHPULL);
+    TIM2->PSC = PRESCALER - 1;
+    TIM2->ARR = AUTORELOAD - 1;
+    TIM2->DIER |= TIM_DIER_UIE;
+    TIM2->CR1 &= ~(TIM_CR1_DIR | TIM_CR1_CMS);
+    TIM2->CR1 |= TIM_CR1_CEN;
     NVIC_EnableIRQ(TIM2_IRQn);
     while(1);
 }
 
 void TIM2_IRQHandler()
-// {
-//     LL_TIM_ClearFlag_UPDATE(TIM2);
-//     LL_GPIO_TogglePin(GPIOC,LL_GPIO_PIN_13);
+{
+    TIM2->SR &= ~TIM_SR_UIF;
+    uint32_t odr = GPIOC->ODR;
+    GPIOC->BSRR = ((odr & (1 << 13)) << 16) | (~odr & (1 << 13));
 }
+
