@@ -41,6 +41,8 @@ INCLUDES   = -I$(INC_DIR)
 # Vendor sources
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_gpio.c
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_tim.c
+CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_rcc.c
+CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_usart.c
 
 # Vendor includes
 INCLUDES += -I$(PERIPH_LIB)/Inc
@@ -65,7 +67,7 @@ CFLAGS += -mthumb -mlittle-endian -mthumb-interwork
 CFLAGS += -mcpu=$(MODEL_CORE) 
 CFLAGS += -D$(MODEL)
 CFLAGS += $(INCLUDES)
-# CFLAGS += -DUSE_FULL_LL_DRIVER
+CFLAGS += -DUSE_FULL_LL_DRIVER
 
 # Linker Flags
 LFLAGS = -Wl,--gc-sections -Wl,-T$(LD_SCRIPT) --specs=rdimon.specs

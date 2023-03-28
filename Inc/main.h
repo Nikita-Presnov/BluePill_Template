@@ -10,5 +10,5 @@
 #define AUTORELOAD 8000
 #define PRESCALER  500
 #define BAUDRATE 9600
-#define FCLK 36000000
+#define FCLK 8000000
 #endif
