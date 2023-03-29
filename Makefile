@@ -52,9 +52,13 @@ INCLUDES += -I$(CMSIS_ROOT)/Include
 # Compiler Flags
 
 # GCC
-CFLAGS  = -O2 -Wall -Wextra -Warray-bounds -std=c99
+
 ifdef DEBUG
-CFLAGS += -g
+$(info DEBUG MODE)
+CFLAGS  = -Wall -Wextra -Warray-bounds -std=c99 -g
+else
+$(info NODEBUG MODE)
+CFLAGS  = -O2 -Wall -Wextra -Warray-bounds -std=c99
 endif
 # Generate dependency information
 CFLAGS += -MMD -MP
@@ -116,6 +120,9 @@ $(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
 intel-hex: $(BUILD_DIR)/$(TARGET).hex
 
 binary: $(BUILD_DIR)/$(TARGET).bin
+
+flash: $(BUILD_DIR)/$(TARGET).elf
+	openocd -f ./openocd.cfg -c "init; reset halt; flash write_image erase $(BUILD_DIR)/$(TARGET).elf; reset; exit"
 
 # Make directory
 $(BUILD_DIR):
