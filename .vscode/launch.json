@@ -4,7 +4,7 @@
         {
             "name": "Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceFolder}/Build/firmware.elf",
+            "executable": "${workspaceFolder}/Build/Debug/firmware.elf",
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",
@@ -18,7 +18,7 @@
         {
             "name": "Release",
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceFolder}/Build/firmware.elf",
+            "executable": "${workspaceFolder}/Build/Release/firmware.elf",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
