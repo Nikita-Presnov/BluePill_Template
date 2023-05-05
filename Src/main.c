@@ -11,6 +11,7 @@ int main()
 
     // GPIOC->CRH &= ~(GPIO_CRH_MODE13 | GPIO_CRH_CNF13);
     // GPIOC->CRH |= GPIO_CRH_MODE13_0;
+    InitLed();
     InitTIM2();
     InitUSART();
     // TIM2->PSC = PRESCALER - 1;
