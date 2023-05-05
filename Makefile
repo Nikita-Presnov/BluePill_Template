@@ -1,7 +1,7 @@
 # Path you your toolchain installation, leave empty if already in system PATH
 # TOOLCHAIN_PATH =
 
-# Path to the STM32 codebase, make sure to update the submodule to get the code
+# Path to the codebase, make sure to update the submodule to get the code
 PERIPH_LIB = PeripheralLib
 CMSIS_ROOT = CMSIS
 ###############################################################################
@@ -41,16 +41,20 @@ LD_SCRIPT = STM32F103XB_FLASH.ld
 INCLUDES   = -I$(INC_DIR)
 
 # Vendor sources
+ifdef PERIPH_LIB
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_gpio.c
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_tim.c
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_rcc.c
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_usart.c
-
+endif
 # Vendor includes
+ifdef PERIPH_LIB
 INCLUDES += -I$(PERIPH_LIB)/Inc
+endif
+ifdef CMSIS_ROOT
 INCLUDES += -I$(CMSIS_ROOT)/STM32F1xx/Include
 INCLUDES += -I$(CMSIS_ROOT)/Include
-
+endif
 # Compiler Flags
 
 # GCC
@@ -151,8 +155,8 @@ $(BUILD_DIR)/$(BUILD_MODE):
 
 # Clean
 clean:
-#	@rm -rfv $(BUILD_DIR)
-	@rm $(BUILD_DIR)/$(DEBUG_DIR)/$(TARGET)* \
-		$(BUILD_DIR)/$(RELEASE_DIR)/$(TARGET)* \
-		$(BUILD_DIR)/$(DEBUG_DIR)/$(OBJ_DIR)/* \
-		$(BUILD_DIR)/$(RELEASE_DIR)/$(OBJ_DIR)/* 
+	@rm -rfv $(BUILD_DIR)
+# @rm $(BUILD_DIR)/$(DEBUG_DIR)/$(TARGET)* \
+# 	$(BUILD_DIR)/$(RELEASE_DIR)/$(TARGET)* \
+# 	$(BUILD_DIR)/$(DEBUG_DIR)/$(OBJ_DIR)/* \
+# 	$(BUILD_DIR)/$(RELEASE_DIR)/$(OBJ_DIR)/* 
