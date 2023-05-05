@@ -2,7 +2,7 @@
 
 Project template for STM32F103XB with USART, easy to adaptation to another board, makefile is used.
 It ~~was tested~~ for BK3432 UART.
-CSIMS only, not libs.
+CSIMS only, not libs, but part of LL was added.
 
 ## Dependencies
 
@@ -30,9 +30,14 @@ For debug mode
 ```bash
 DEBUG=1 make
 ```
+or 
+```bash
+make debug
+```
+
 Not tested on Windows, but should work.
 
-Firmware with `firmware.elf` will be in the `Build` directory.
+Firmware `firmware.elf` will be in the `Build/Release` directory.
 
 To build .hex
 ```bash
@@ -44,8 +49,9 @@ make binary
 ```
 ## Controller flasing
 
-In the future, such functionality will be added to the `openocd` config.
-
+```bash
+make flash
+```
 ## Debugging
 
 The above `openocd` uses VS Code with the [Cortex-Debug](https://marketplace.visualstudio.com/items?itemName=marus25.cortex-debug) extension as its IDE. Configs in the commit, all the charms of the register type are available.
