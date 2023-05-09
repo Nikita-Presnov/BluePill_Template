@@ -2,8 +2,9 @@
 # TOOLCHAIN_PATH =
 
 # Path to the codebase, make sure to update the submodule to get the code
-PERIPH_LIB = PeripheralLib
+# PERIPH_LIB = PeripheralLib
 CMSIS_ROOT = CMSIS
+USB = USBLib
 ###############################################################################
 
 # Project specific
@@ -40,20 +41,22 @@ LD_SCRIPT = STM32F103XB_FLASH.ld
 # Project includes
 INCLUDES   = -I$(INC_DIR)
 
-# Vendor sources
 ifdef PERIPH_LIB
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_gpio.c
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_tim.c
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_rcc.c
 CXX_FILES += $(PERIPH_LIB)/Src/stm32f1xx_ll_usart.c
-endif
-# Vendor includes
-ifdef PERIPH_LIB
 INCLUDES += -I$(PERIPH_LIB)/Inc
 endif
+
 ifdef CMSIS_ROOT
 INCLUDES += -I$(CMSIS_ROOT)/STM32F1xx/Include
 INCLUDES += -I$(CMSIS_ROOT)/Include
+endif
+
+ifdef USB
+CXX_FILES += $(wildcard $(USB)/*.c)
+INCLUDES += -I$(USB)
 endif
 # Compiler Flags
 
@@ -138,8 +141,7 @@ flash: $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).elf
 	openocd -f ./openocd.cfg -c "init; reset halt; flash write_image erase $<; reset; exit"
 
 # Make directory
-$(BUILD_DIR)/$(BUILD_MODE):
-	@mkdir $(BUILD_DIR)
+$(BUILD_DIR)/$(BUILD_MODE): $(BUILD_DIR)
 	@mkdir $(BUILD_DIR)/$(BUILD_MODE)
 	@mkdir $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)
 # build_dir: $(OBJ_DIR)
@@ -150,8 +152,8 @@ $(BUILD_DIR)/$(BUILD_MODE):
 # $(BUILD_MODE): | $(BUILD_DIR)
 # 	@mkdir $(BUILD_DIR)/$(BUILD_MODE)
 
-# $(BUILD_DIR):
-# 	@mkdir $(BUILD_DIR)
+$(BUILD_DIR):
+	@mkdir $(BUILD_DIR)
 
 # Clean
 clean:

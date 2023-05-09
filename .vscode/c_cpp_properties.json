@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/CMSIS/STM32F1xx/Include",
                 "${workspaceFolder}/CMSIS/Include",
-                "${workspaceFolder}/PeripheralLib/Inc"
+                "${workspaceFolder}/PeripheralLib/Inc",
+                "${workspaceFolder}/USBLib"
             ],
             "defines": [
                 "STM32F103xB",
