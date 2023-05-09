@@ -1,5 +1,5 @@
 #include "stm32f1xx.h"
-
+#include "clock.h"
 void InitSysClockHSE8(void)
 {
     RCC->CR |= RCC_CR_HSEON;
@@ -27,6 +27,7 @@ void InitSysClockHSE8(void)
     {
     }
 }
+
 void InitSysClockHSE72(void)
 {
     RCC->CR |= RCC_CR_HSEON;
