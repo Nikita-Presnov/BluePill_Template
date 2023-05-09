@@ -3,7 +3,9 @@
 void InitSysClockHSE8(void)
 {
     RCC->CR |= RCC_CR_HSEON;
-    while(RCC->CR & RCC_CR_HSERDY);
+    while (RCC->CR & RCC_CR_HSERDY)
+    {
+    }
     FLASH->ACR &= ~FLASH_ACR_PRFTBE;
     FLASH->ACR |= FLASH_ACR_PRFTBE;
     FLASH->ACR &= ~FLASH_ACR_LATENCY;
@@ -31,18 +33,20 @@ void InitSysClockHSE8(void)
 void InitSysClockHSE72(void)
 {
     RCC->CR |= RCC_CR_HSEON;
-    while(RCC->CR & RCC_CR_HSERDY);
+    while (RCC->CR & RCC_CR_HSERDY)
+    {
+    }
     FLASH->ACR &= ~FLASH_ACR_PRFTBE;
     FLASH->ACR |= FLASH_ACR_PRFTBE;
     FLASH->ACR &= ~FLASH_ACR_LATENCY;
     FLASH->ACR |= FLASH_ACR_LATENCY_2;
 
     /* HCLK = SYSCLK */
-    RCC->CFGR &=~RCC_CFGR_HPRE;
+    RCC->CFGR &= ~RCC_CFGR_HPRE;
     RCC->CFGR |= RCC_CFGR_HPRE_DIV1;
 
     /* PCLK2 = HCLK */
-    RCC->CFGR &=~RCC_CFGR_PPRE2;
+    RCC->CFGR &= ~RCC_CFGR_PPRE2;
     RCC->CFGR |= RCC_CFGR_PPRE2_DIV1;
 
     /* PCLK1 = HCLK */
@@ -55,8 +59,9 @@ void InitSysClockHSE72(void)
     /* Enable PLL */
     RCC->CR |= RCC_CR_PLLON;
     /* Wait till PLL is ready */
-    while(!(RCC->CR & RCC_CR_PLLRDY));
-
+    while (!(RCC->CR & RCC_CR_PLLRDY))
+    {
+    }
     /* Select PLL as system clock source */
     RCC->CFGR &= ~RCC_CFGR_SW;
     RCC->CFGR |= RCC_CFGR_SW_PLL;

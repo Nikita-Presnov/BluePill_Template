@@ -17,9 +17,9 @@ void InitUSART(int baudrate)
     // LL_RCC_GetSystemClocksFreq(&RCCClocks);
     USART1->CR1 |= USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE;
 
-    uint16_t mantissa = FCLK72/(baudrate*16);
-    uint8_t fraction = (FCLK72/(baudrate*16.0) - mantissa) * 16;
-    USART1->BRR = (mantissa << 4) | fraction;  
+    uint16_t mantissa = FCLK72 / (baudrate * 16);
+    uint8_t fraction = (FCLK72 / (baudrate * 16.0) - mantissa) * 16;
+    USART1->BRR = (mantissa << 4) | fraction;
     USART1->CR1 |= USART_CR1_UE;
 
     // NVIC_EnableIRQ(USART1_IRQn);
@@ -27,7 +27,9 @@ void InitUSART(int baudrate)
 
 void SendByte(char byte)
 {
-    while (!((USART1->SR & USART_SR_TXE) == USART_SR_TXE));
+    while (!((USART1->SR & USART_SR_TXE) == USART_SR_TXE))
+    {
+    }
     USART1->DR = byte;
 }
 
@@ -35,7 +37,9 @@ void Send(char *data, int len)
 {
     for (int i = 0; i < len; i++)
     {
-        while (!((USART1->SR & USART_SR_TXE) == USART_SR_TXE));
+        while (!((USART1->SR & USART_SR_TXE) == USART_SR_TXE))
+        {
+        }
         USART1->DR = data[i];
     }
 }
@@ -44,9 +48,11 @@ void SendStr(char *string)
 {
     char *data;
     data = string;
-    for (;*data != '\0'; data++)
+    for (; *data != '\0'; data++)
     {
-        while (!((USART1->SR & USART_SR_TXE) == USART_SR_TXE));
+        while (!((USART1->SR & USART_SR_TXE) == USART_SR_TXE))
+        {
+        }
         USART1->DR = *data;
     }
 }
@@ -63,7 +69,9 @@ int ReadStr(char *string)
     int i;
     for (i = 0; *data != '\0'; data++, i++)
     {
-        while (!((USART1->SR & USART_SR_RXNE) == USART_SR_RXNE));
+        while (!((USART1->SR & USART_SR_RXNE) == USART_SR_RXNE))
+        {
+        }
         *data = USART1->DR;
     }
     return i;
