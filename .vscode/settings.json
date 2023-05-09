@@ -5,5 +5,5 @@
         "*.h": "c"
     },
     "cortex-debug.gdbPath": "gdb-multiarch",
-    "cortex-debug.variableUseNaturalFormat": false
+    "cortex-debug.variableUseNaturalFormat": true
 }

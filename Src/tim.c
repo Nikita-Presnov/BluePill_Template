@@ -1,8 +1,9 @@
 #include "stm32f1xx.h"
-#define AUTORELOAD 8000UL
-#define PRESCALER  500UL
+#include "tim.h"
+
 void InitTIM2(void)
 {
+    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
     TIM2->PSC = PRESCALER - 1;
     TIM2->ARR = AUTORELOAD - 1;
     TIM2->DIER |= TIM_DIER_UIE;

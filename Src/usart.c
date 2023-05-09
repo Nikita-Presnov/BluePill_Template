@@ -1,10 +1,12 @@
 #include "stm32f1xx.h"
 #include "define.h"
+#include "usart.h"
 // #include <string.h>
 
-void InitUSART(void)
+void InitUSART(int baudrate)
 {
-    // RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_USART1EN;
+    RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+    // RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
 
     GPIOA->CRH &= ~(GPIO_CRH_CNF10 | GPIO_CRH_CNF9 | GPIO_CRH_MODE10);
     GPIOA->CRH |= GPIO_CRH_CNF10_0 | GPIO_CRH_CNF9_1 | GPIO_CRH_MODE9;
@@ -15,8 +17,8 @@ void InitUSART(void)
     // LL_RCC_GetSystemClocksFreq(&RCCClocks);
     USART1->CR1 |= USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE;
 
-    uint16_t mantissa = FCLK/(BAUDRATE*16);
-    uint8_t fraction = (FCLK/(BAUDRATE*16.0) - mantissa) * 16;
+    uint16_t mantissa = FCLK72/(baudrate*16);
+    uint8_t fraction = (FCLK72/(baudrate*16.0) - mantissa) * 16;
     USART1->BRR = (mantissa << 4) | fraction;  
     USART1->CR1 |= USART_CR1_UE;
 
@@ -52,4 +54,17 @@ void SendStr(char *string)
 char ReadByte(void)
 {
     return USART1->DR;
+}
+
+int ReadStr(char *string)
+{
+    char *data;
+    data = string;
+    int i;
+    for (i = 0; *data != '\0'; data++, i++)
+    {
+        while (!((USART1->SR & USART_SR_RXNE) == USART_SR_RXNE));
+        *data = USART1->DR;
+    }
+    return i;
 }

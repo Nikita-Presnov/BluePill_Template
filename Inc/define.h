@@ -3,7 +3,7 @@
 
 
 #define BAUDRATE 9600UL
-#define FCLK 8000000UL
-#define USART1FCLK 72000000UL
+#define FCLK8 8000000UL
+#define FCLK72 72000000UL
 
 #endif /* __DEFINE_H__ */
