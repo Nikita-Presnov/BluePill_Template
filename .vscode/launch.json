@@ -16,6 +16,20 @@
             "preLaunchTask": "make debug"
         },
         {
+            "name": "Debug cks",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/Build/Debug/firmware.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "openocd",
+            "svdFile": "${workspaceFolder}/STM32F103.svd",
+            "configFiles": [
+                "${workspaceFolder}/openocd_cks.cfg"
+            ],
+            "preLaunchTask": "make debug"
+        },
+        {
             "name": "Release",
             "cwd": "${workspaceFolder}",
             "executable": "${workspaceFolder}/Build/Release/firmware.elf",

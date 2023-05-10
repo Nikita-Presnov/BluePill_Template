@@ -11,7 +11,7 @@ int main()
 {
     RCC->APB2ENR |= RCC_APB2ENR_IOPCEN | RCC_APB2ENR_IOPAEN;
     // InitSysClockHSE8();
-    // InitSysClockHSE72();
+    InitSysClockHSE72();
     InitLed();
     InitTIM2();
     InitUSART(BAUDRATE);

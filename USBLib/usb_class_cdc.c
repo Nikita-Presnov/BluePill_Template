@@ -145,10 +145,10 @@ USB_ALIGN static const uint8_t USB_ConfigDescriptor[] = {
                                                 0, // bInterval - частота опроса, для изохронных всегда 1
                                                 ))};
 
-USB_STRING(USB_StringLangDescriptor, "\x0409");              // lang US
-USB_STRING(USB_StringManufacturingDescriptor, "COKPOWEHEU"); // Vendor
-USB_STRING(USB_StringProdDescriptor, "USB CDC");             // Product
-USB_STRING(USB_StringSerialDescriptor, "1");                 // Serial (BCD)
+USB_STRING(USB_StringLangDescriptor, u"\x0409");              // lang US
+USB_STRING(USB_StringManufacturingDescriptor, u"COKPOWEHEU"); // Vendor
+USB_STRING(USB_StringProdDescriptor, u"USB CDC");             // Product
+USB_STRING(USB_StringSerialDescriptor, u"1");                 // Serial (BCD)
 
 void usb_class_get_std_descr(uint16_t descr, const void **data, uint16_t *size)
 {
