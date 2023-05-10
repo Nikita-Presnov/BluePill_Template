@@ -4,7 +4,6 @@
 #include "tim.h"
 #include "led.h"
 #include "clock.h"
-
 #include "stm32f1xx.h"
 
 int main()

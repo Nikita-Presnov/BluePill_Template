@@ -4,7 +4,7 @@
 # Path to the codebase, make sure to update the submodule to get the code
 # PERIPH_LIB = PeripheralLib
 CMSIS_ROOT = CMSIS
-# USB = USBLib
+USB = USBLib
 ###############################################################################
 
 # Project specific
@@ -66,13 +66,16 @@ endif
 
 ifdef DEBUG
 $(info [info] debug mode)
-CFLAGS  = -Wall -Wextra -Warray-bounds -std=c99 -g -Og
+CFLAGS  = -g -Og 
 BUILD_MODE = $(DEBUG_DIR)
 else
 $(info [info] nodebug mode)
-CFLAGS  = -O2 -Wall -Wextra -Warray-bounds -std=c99
+CFLAGS  = -O2
 BUILD_MODE = $(RELEASE_DIR)
 endif
+CFLAGS += -Wall -Wextra -Warray-bounds -std=c99 -lc -lgcc -lm
+CFLAGS += -std=c11
+CFLAGS += -lc -lgcc -lm
 # Generate dependency information
 CFLAGS += -MMD -MP
 #  -MF"$(@:%.o=%.d)"
@@ -113,17 +116,17 @@ release:
 # Compile asm
 $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/%.o: %.s Makefile | $(BUILD_DIR)/$(BUILD_MODE)
 	@echo "[AS] $<"
-	@$(AS) $(CFLAGS) -c $< -o $@
+	@$(AS) -c $< -o $@ $(CFLAGS)
 
 # Compile c
 $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/%.o: %.c Makefile | $(BUILD_DIR)/$(BUILD_MODE)
 	@echo "[CC] $<"
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) -c $< -o $@ $(CFLAGS)
 
 # Link
 $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).elf: $(OBJECTS) Makefile
 	@echo "[LD] $@"
-	@$(CC) $(CFLAGS) $(LFLAGS) $(OBJECTS) -o $@
+	@$(CC) -o $@ $(CFLAGS) $(LFLAGS) $(OBJECTS) 
 	@$(SZ) $@
 
 $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).hex: $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).elf
