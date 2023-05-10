@@ -5,13 +5,15 @@
 #include "led.h"
 #include "clock.h"
 
-#include "pinmacro.h"
-#include "hardware.h"
+// #include "pinmacro.h"
+// #include "hardware.h"
 #include "usb_lib.h"
 #include "usb_defs.h"
 
 #include "stm32f1xx.h"
 #include <string.h>
+
+extern uint8_t rx_data_readed;
 int main()
 {
     // InitSysClockHSE8();
@@ -30,12 +32,19 @@ int main()
     while (1)
     {
         // usb_class_poll();
+        while (!rx_data_readed)
+        {
+            /* code */
+        }
+        // USB->ISTR &= ~USB_ISTR_SOF; 
 
-        int len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buf);
-        USARTSendData(buf, len);
-        // USARTSendStr(iota());
+        int len;
+        len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buf);
+        
+        // // USARTSendStr(iota());
         if (len - 1 != 0)
         {
+            USARTSendData(buf, len);
             usb_ep_write_double(ENDP_DATA_IN | 0x80, (uint16_t *)buf, len);
         }
     }
