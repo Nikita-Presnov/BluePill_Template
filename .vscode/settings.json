@@ -2,7 +2,10 @@
     "cortex-debug.armToolchainPath": "/usr/bin",
     "cortex-debug.openocdPath": "/usr/bin/openocd",
     "files.associations": {
-        "*.h": "c"
+        "*.py": "python",
+        "*.ld": "linkerscript",
+        "*.h": "c",
+        "numeric": "c"
     },
     "cortex-debug.gdbPath": "gdb-multiarch",
     "cortex-debug.variableUseNaturalFormat": true

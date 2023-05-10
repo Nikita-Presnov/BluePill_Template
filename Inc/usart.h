@@ -2,10 +2,10 @@
 #define __USART_H__
 
 void InitUSART(int baudrate);
-char ReadByte(void);
-int ReadStr(char *string);
-void SendByte(char byte);
-void SendStr(char *string);
-void Send(char *data, int len);
+char USARTReadByte(void);
+int USARTReadStr(char *string);
+void USARTSendByte(char byte);
+void USARTSendStr(char *string);
+void USARTSendData(char *data, int len);
 
 #endif /* __USART_H__ */

@@ -4,6 +4,7 @@
 #include "clock.h"
 // #include "stm32f1xx_ll_rcc.h"
 // #include <string.h>
+// #define WAIT_TXE while(!((USART1->SR & USART_SR_TXE) == USART_SR_TXE)){}
 
 void InitUSART(int baudrate)
 {
@@ -27,7 +28,7 @@ void InitUSART(int baudrate)
     // NVIC_EnableIRQ(USART1_IRQn);
 }
 
-void SendByte(char byte)
+void USARTSendByte(char byte)
 {
     while (!((USART1->SR & USART_SR_TXE) == USART_SR_TXE))
     {
@@ -35,7 +36,7 @@ void SendByte(char byte)
     USART1->DR = byte;
 }
 
-void Send(char *data, int len)
+void USARTSendData(char *data, int len)
 {
     for (int i = 0; i < len; i++)
     {
@@ -46,7 +47,18 @@ void Send(char *data, int len)
     }
 }
 
-void SendStr(char *string)
+void USARTSendData16(uint16_t *data, int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        while (!((USART1->SR & USART_SR_TXE) == USART_SR_TXE))
+        {
+        }
+        USART1->DR = data[i];
+    }
+}
+
+void USARTSendStr(char *string)
 {
     char *data;
     data = string;
@@ -59,12 +71,12 @@ void SendStr(char *string)
     }
 }
 
-char ReadByte(void)
+char USARTReadByte(void)
 {
     return USART1->DR;
 }
 
-int ReadStr(char *string)
+int USARTReadStr(char *string)
 {
     char *data;
     data = string;
