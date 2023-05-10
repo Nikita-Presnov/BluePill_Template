@@ -1,6 +1,8 @@
 #include "stm32f1xx.h"
 #include "define.h"
 #include "usart.h"
+#include "clock.h"
+// #include "stm32f1xx_ll_rcc.h"
 // #include <string.h>
 
 void InitUSART(int baudrate)
@@ -16,9 +18,9 @@ void InitUSART(int baudrate)
     // LL_RCC_ClocksTypeDef RCCClocks;
     // LL_RCC_GetSystemClocksFreq(&RCCClocks);
     USART1->CR1 |= USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE;
-
-    uint16_t mantissa = FCLK72 / (baudrate * 16);
-    uint8_t fraction = (FCLK72 / (baudrate * 16.0) - mantissa) * 16;
+    uint32_t fclk = GetPCLK2ClkFreq();
+    uint16_t mantissa = fclk / (baudrate * 16);
+    uint8_t fraction = (fclk / (baudrate * 16.0) - mantissa) * 16;
     USART1->BRR = (mantissa << 4) | fraction;
     USART1->CR1 |= USART_CR1_UE;
 

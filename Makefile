@@ -4,7 +4,7 @@
 # Path to the codebase, make sure to update the submodule to get the code
 # PERIPH_LIB = PeripheralLib
 CMSIS_ROOT = CMSIS
-USB = USBLib
+# USB = USBLib
 ###############################################################################
 
 # Project specific
@@ -36,6 +36,8 @@ BIN = $(CP) -O binary -S
 # Project sources
 CXX_FILES = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*/*.c)
 ASM_FILES = $(wildcard $(SRC_DIR)/*.s) $(wildcard $(SRC_DIR)/*/*.s)
+# TMP_CXX_FILES := $(CXX_FILES)
+# CXX_FILES = $(filter-out $(SRC_DIR)/system_stm32f1xx.c, $(TMP_CXX_FILES))
 LD_SCRIPT = STM32F103XB_FLASH.ld
 
 # Project includes
