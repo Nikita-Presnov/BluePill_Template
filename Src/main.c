@@ -41,12 +41,8 @@ int main()
         int len;
         len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buf);
         
-        // // USARTSendStr(iota());
-        if (len - 1 != 0)
-        {
-            USARTSendData(buf, len);
-            usb_ep_write_double(ENDP_DATA_IN | 0x80, (uint16_t *)buf, len);
-        }
+        USARTSendData(buf, len);
+        usb_ep_write_double(ENDP_DATA_IN | 0x80, (uint16_t *)buf, len);
     }
 }
 
