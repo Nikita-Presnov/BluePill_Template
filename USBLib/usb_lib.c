@@ -86,7 +86,6 @@ typedef struct
 
 epfunc_t epfunc_in[STM32ENDPOINTS];
 epfunc_t epfunc_out[STM32ENDPOINTS];
-uint8_t rx_data_readed;
 static config_pack_t setup_packet;
 
 // USB_PULLUP may be defined in "hardware.h"
@@ -411,7 +410,6 @@ void USB_LP_IRQHandler()
       { // OUT
         epfunc_out[epnum](epnum);
         ENDP_CTR_RX_CLR(epnum);
-        rx_data_readed = 1;
       }
       if (USB_EPx(epnum) & USB_EP_CTR_TX)
       { // IN
@@ -497,7 +495,6 @@ void _usb_ep_write(uint8_t idx, const uint16_t *buf, uint16_t size)
 
 int _usb_ep_read(uint8_t idx, uint16_t *buf)
 {
-  rx_data_readed = 0;
   pma_descr_t *descr = &((pma_descr_t *)usb_epdata)[idx];
   int sz = descr->rx_count;
   if (!sz)

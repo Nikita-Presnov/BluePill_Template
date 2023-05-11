@@ -14,6 +14,8 @@
 #include <string.h>
 
 extern uint8_t rx_data_readed;
+extern int rx_data_len;
+extern USB_ALIGN uint8_t buffer[ENDP_DATA_SIZE];
 int main()
 {
     // InitSysClockHSE8();
@@ -28,7 +30,7 @@ int main()
     __enable_irq();
 
     USARTSendStr("ok\n");
-    USB_ALIGN uint8_t buf[ENDP_DATA_SIZE];
+    // USB_ALIGN uint8_t buf[ENDP_DATA_SIZE];
     while (1)
     {
         // usb_class_poll();
@@ -38,11 +40,15 @@ int main()
         }
         // USB->ISTR &= ~USB_ISTR_SOF; 
 
-        int len;
-        len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buf);
+        // int len;
+        // len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buf);
         
-        USARTSendData(buf, len);
-        usb_ep_write_double(ENDP_DATA_IN | 0x80, (uint16_t *)buf, len);
+        // USARTSendData(buf, len);
+        if(rx_data_readed)
+        {
+            usb_ep_write_double(ENDP_DATA_IN | 0x80, (uint16_t *)buffer, rx_data_len);
+            rx_data_readed = 0;
+        }
     }
 }
 

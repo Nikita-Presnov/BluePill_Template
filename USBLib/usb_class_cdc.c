@@ -131,6 +131,10 @@ USB_STRING(USB_StringManufacturingDescriptor, u"COKPOWEHEU"); // Vendor
 USB_STRING(USB_StringProdDescriptor, u"USB CDC");             // Product
 USB_STRING(USB_StringSerialDescriptor, u"1");                 // Serial (BCD)
 
+uint8_t rx_data_readed;
+int rx_data_len;
+USB_ALIGN uint8_t buffer[ENDP_DATA_SIZE];
+
 void usb_class_get_std_descr(uint16_t descr, const void **data, uint16_t *size)
 {
   switch (descr & 0xFF00)
@@ -248,10 +252,16 @@ void ctl_callback(uint8_t epnum)
 
 void data_out_callback(uint8_t epnum)
 {
-  USB_ALIGN uint8_t buf[ENDP_DATA_SIZE];
-  int len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buf);
-  if (len == 0)
+  // USB_ALIGN uint8_t buf[ENDP_DATA_SIZE];
+  // int len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buf);
+  // if (len == 0)
+  //   return;
+  rx_data_len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buffer);
+  if (rx_data_len == 0)
+  {
     return;
+  }
+  rx_data_readed = 1;
   // if(buf[0] == 'a')GPO_ON(GLED);
   // if(buf[0] == 's')GPO_OFF(GLED);
 }
@@ -278,14 +288,14 @@ char test()
 
 void data_in_callback(uint8_t epnum)
 {
-  static uint8_t cnt = 0;
-  if (cnt >= 1)
-  {
-    cnt = 0;
-    return;
-  }
-  test();
-  cnt++;
+  // static uint8_t cnt = 0;
+  // if (cnt >= 1)
+  // {
+  //   cnt = 0;
+  //   return;
+  // }
+  // test();
+  // cnt++;
 }
 
 void usb_class_init()
