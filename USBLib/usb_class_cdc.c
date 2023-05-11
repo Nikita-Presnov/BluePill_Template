@@ -137,49 +137,49 @@ USB_ALIGN uint8_t buffer[ENDP_DATA_SIZE];
 
 void usb_class_get_std_descr(uint16_t descr, const void **data, uint16_t *size)
 {
-  switch (descr & 0xFF00)
-  {
-  case DEVICE_DESCRIPTOR:
-    *data = &USB_DeviceDescriptor;
-    *size = sizeof(USB_DeviceDescriptor);
-    break;
-  case CONFIGURATION_DESCRIPTOR:
-    *data = &USB_ConfigDescriptor;
-    *size = sizeof(USB_ConfigDescriptor);
-    break;
-  case DEVICE_QUALIFIER_DESCRIPTOR:
-    *data = &USB_DeviceQualifierDescriptor;
-    *size = USB_DeviceQualifierDescriptor[0];
-    break;
-  case STRING_DESCRIPTOR:
-    switch (descr & 0xFF)
+    switch (descr & 0xFF00)
     {
-    case STD_DESCR_LANG:
-      *data = &USB_StringLangDescriptor;
-      break;
-    case STD_DESCR_VEND:
-      *data = &USB_StringManufacturingDescriptor;
-      break;
-    case STD_DESCR_PROD:
-      *data = &USB_StringProdDescriptor;
-      break;
-    case STD_DESCR_SN:
-      *data = &USB_StringSerialDescriptor;
-      break;
+    case DEVICE_DESCRIPTOR:
+        *data = &USB_DeviceDescriptor;
+        *size = sizeof(USB_DeviceDescriptor);
+        break;
+    case CONFIGURATION_DESCRIPTOR:
+        *data = &USB_ConfigDescriptor;
+        *size = sizeof(USB_ConfigDescriptor);
+        break;
+    case DEVICE_QUALIFIER_DESCRIPTOR:
+        *data = &USB_DeviceQualifierDescriptor;
+        *size = USB_DeviceQualifierDescriptor[0];
+        break;
+    case STRING_DESCRIPTOR:
+        switch (descr & 0xFF)
+        {
+        case STD_DESCR_LANG:
+            *data = &USB_StringLangDescriptor;
+            break;
+        case STD_DESCR_VEND:
+            *data = &USB_StringManufacturingDescriptor;
+            break;
+        case STD_DESCR_PROD:
+            *data = &USB_StringProdDescriptor;
+            break;
+        case STD_DESCR_SN:
+            *data = &USB_StringSerialDescriptor;
+            break;
+        default:
+            return;
+        }
+        *size = ((uint8_t *)*data)[0]; // data->bLength
+        break;
     default:
-      return;
+        break;
     }
-    *size = ((uint8_t *)*data)[0]; // data->bLength
-    break;
-  default:
-    break;
-  }
 }
 
 static void sleep(uint32_t time)
 {
-  while (time--)
-    asm volatile("nop");
+    while (time--)
+        asm volatile("nop");
 }
 
 #define CDC_SEND_ENCAPSULATED 0x00
@@ -194,10 +194,10 @@ static void sleep(uint32_t time)
 
 struct cdc_linecoding
 {
-  uint32_t baudrate;
-  uint8_t stopbits; // 0=1bit, 1=1.5bits, 2=2bits
-  uint8_t parity;   // 0=none, 1=odd, 2=even, 3=mark (WTF?), 4=space (WTF?)
-  uint8_t wordsize; // length of data word: 5,6,7,8 or 16 bits
+    uint32_t baudrate;
+    uint8_t stopbits; // 0=1bit, 1=1.5bits, 2=2bits
+    uint8_t parity;   // 0=none, 1=odd, 2=even, 3=mark (WTF?), 4=space (WTF?)
+    uint8_t wordsize; // length of data word: 5,6,7,8 or 16 bits
 } __attribute__((packed));
 
 USB_ALIGN volatile struct cdc_linecoding linecoding = {
@@ -209,41 +209,41 @@ USB_ALIGN volatile struct cdc_linecoding linecoding = {
 
 char usb_class_ep0_in(config_pack_t *req, void **data, uint16_t *size)
 {
-  if ((req->bmRequestType & 0x7F) == (USB_REQ_CLASS | USB_REQ_INTERFACE))
-  {
-    if (req->bRequest == CDC_GET_LINE_CODING)
+    if ((req->bmRequestType & 0x7F) == (USB_REQ_CLASS | USB_REQ_INTERFACE))
     {
-      *data = (void *)&linecoding;
-      *size = sizeof(linecoding);
-      return 1;
+        if (req->bRequest == CDC_GET_LINE_CODING)
+        {
+            *data = (void *)&linecoding;
+            *size = sizeof(linecoding);
+            return 1;
+        }
     }
-  }
-  return 0;
+    return 0;
 }
 
 char usb_class_ep0_out(config_pack_t *req, uint16_t offset, uint16_t rx_size)
 {
-  if ((req->bmRequestType & 0x7F) == (USB_REQ_CLASS | USB_REQ_INTERFACE))
-  {
-    if (req->bRequest == CDC_SET_LINE_CODING)
+    if ((req->bmRequestType & 0x7F) == (USB_REQ_CLASS | USB_REQ_INTERFACE))
     {
-      if (rx_size == 0)
-        return 1;
+        if (req->bRequest == CDC_SET_LINE_CODING)
+        {
+            if (rx_size == 0)
+                return 1;
 
-      usb_ep_read(0, (void *)&linecoding);
-      // if(linecoding.baudrate == 9600)GPO_ON(GLED); else GPO_OFF(GLED);
-      // if(linecoding.baudrate == 115200)GPO_ON(RLED); else GPO_OFF(RLED);
-      return 1;
+            usb_ep_read(0, (void *)&linecoding);
+            // if(linecoding.baudrate == 9600)GPO_ON(GLED); else GPO_OFF(GLED);
+            // if(linecoding.baudrate == 115200)GPO_ON(RLED); else GPO_OFF(RLED);
+            return 1;
+        }
+        else if (req->bRequest == CDC_SET_CTRL_LINES)
+        {
+            // wValue bits:
+            //   7-2 : reserved
+            //   1   : RTS
+            //   0   : DTR
+        }
     }
-    else if (req->bRequest == CDC_SET_CTRL_LINES)
-    {
-      // wValue bits:
-      //   7-2 : reserved
-      //   1   : RTS
-      //   0   : DTR
-    }
-  }
-  return 0;
+    return 0;
 }
 
 void ctl_callback(uint8_t epnum)
@@ -252,76 +252,76 @@ void ctl_callback(uint8_t epnum)
 
 void data_out_callback(uint8_t epnum)
 {
-  // USB_ALIGN uint8_t buf[ENDP_DATA_SIZE];
-  // int len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buf);
-  // if (len == 0)
-  //   return;
-  rx_data_len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buffer);
-  if (rx_data_len == 0)
-  {
-    return;
-  }
-  rx_data_readed = 1;
-  // if(buf[0] == 'a')GPO_ON(GLED);
-  // if(buf[0] == 's')GPO_OFF(GLED);
+    // USB_ALIGN uint8_t buf[ENDP_DATA_SIZE];
+    // int len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buf);
+    // if (len == 0)
+    //   return;
+    rx_data_len = usb_ep_read_double(ENDP_DATA_OUT, (uint16_t *)buffer);
+    if (rx_data_len == 0)
+    {
+        return;
+    }
+    rx_data_readed = 1;
+    // if(buf[0] == 'a')GPO_ON(GLED);
+    // if(buf[0] == 's')GPO_OFF(GLED);
 }
 
 void fmtu8(uint8_t x, char *buf)
 {
-  buf[0] = x / 100 + '0';
-  buf[1] = (x / 10) % 10 + '0';
-  buf[2] = x % 10 + '0';
-  buf[3] = '\n';
-  buf[4] = '\r';
-  buf[5] = 0;
+    buf[0] = x / 100 + '0';
+    buf[1] = (x / 10) % 10 + '0';
+    buf[2] = x % 10 + '0';
+    buf[3] = '\n';
+    buf[4] = '\r';
+    buf[5] = 0;
 }
 
 char test()
 {
-  static uint8_t x = 0;
-  USB_ALIGN uint8_t ch[6];
-  fmtu8(x, (char *)ch);
-  usb_ep_write_double(ENDP_DATA_IN | 0x80, (uint16_t *)ch, sizeof(ch) - 1);
-  x++;
-  return 1;
+    static uint8_t x = 0;
+    USB_ALIGN uint8_t ch[6];
+    fmtu8(x, (char *)ch);
+    usb_ep_write_double(ENDP_DATA_IN | 0x80, (uint16_t *)ch, sizeof(ch) - 1);
+    x++;
+    return 1;
 }
 
 void data_in_callback(uint8_t epnum)
 {
-  // static uint8_t cnt = 0;
-  // if (cnt >= 1)
-  // {
-  //   cnt = 0;
-  //   return;
-  // }
-  // test();
-  // cnt++;
+    // static uint8_t cnt = 0;
+    // if (cnt >= 1)
+    // {
+    //   cnt = 0;
+    //   return;
+    // }
+    // test();
+    // cnt++;
 }
 
 void usb_class_init()
 {
-  usb_ep_init(ENDP_CTL_NUM | 0x80, USB_ENDP_INTR, ENDP_CTL_SIZE, ctl_callback);
+    usb_ep_init(ENDP_CTL_NUM | 0x80, USB_ENDP_INTR, ENDP_CTL_SIZE, ctl_callback);
 
-  usb_ep_init_double(ENDP_DATA_IN | 0x80, USB_ENDP_BULK, ENDP_DATA_SIZE, data_in_callback);
-  usb_ep_init_double(ENDP_DATA_OUT, USB_ENDP_BULK, ENDP_DATA_SIZE, data_out_callback);
+    usb_ep_init_double(ENDP_DATA_IN | 0x80, USB_ENDP_BULK, ENDP_DATA_SIZE, data_in_callback);
+    usb_ep_init_double(ENDP_DATA_OUT, USB_ENDP_BULK, ENDP_DATA_SIZE, data_out_callback);
 }
 
 void usb_class_poll()
 {
-  /*if(GPI_ON( BTN1 )){
-    while( GPI_ON(BTN1) ){}
-  }
-  if(GPI_ON( BTN2 )){
-    while( GPI_ON(BTN2) ){}
-    uint8_t ch = 'a';
-    usb_ep_write_double(ENDP_DATA_IN | 0x80, &ch, 1);
-    GPO_T(RLED);
-  }*/
-  if (linecoding.baudrate > 0)
-  {
-    test();
-  }
+    /*if(GPI_ON( BTN1 )){
+      while( GPI_ON(BTN1) ){}
+    }
+    if(GPI_ON( BTN2 )){
+      while( GPI_ON(BTN2) ){}
+      uint8_t ch = 'a';
+      usb_ep_write_double(ENDP_DATA_IN | 0x80, &ch, 1);
+      GPO_T(RLED);
+    }*/
+    if (linecoding.baudrate > 0)
+    {
+        test();
+    }
 
-  // GPO_T(RLED);
-  sleep(5000000);
+    // GPO_T(RLED);
+    sleep(5000000);
 }
