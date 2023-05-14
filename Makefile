@@ -65,11 +65,11 @@ endif
 # GCC
 
 ifdef DEBUG
-$(info [info] debug mode)
+# $(info [info] debug mode)
 CFLAGS  = -g -Og 
 BUILD_MODE = $(DEBUG_DIR)
 else
-$(info [info] nodebug mode)
+# $(info [info] release mode)
 CFLAGS  = -O2
 BUILD_MODE = $(RELEASE_DIR)
 endif
@@ -99,7 +99,7 @@ OBJECTS  = $(addprefix $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/,$(notdir $(CXX_FIL
 OBJECTS += $(addprefix $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/,$(notdir $(ASM_FILES:.s=.o)))
 DEPENDS  = $(addprefix $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.c=.d)))
 DEPENDS += $(addprefix $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/,$(notdir $(ASM_FILES:.s=.d)))
-.PHONY: clean
+.PHONY: all clean flash
 vpath %.c $(sort $(dir $(CXX_FILES)))
 vpath %.s $(sort $(dir $(ASM_FILES)))
 # .PHONY: clean
@@ -107,9 +107,11 @@ vpath %.s $(sort $(dir $(ASM_FILES)))
 all: $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).elf
 # all: make 
 debug:
+	@echo "[info] debug mode"
 	@DEBUG=1 make
 
 release:
+	@echo "[info] release mode"
 	@make
 	
 -include $(DEPENDS)
@@ -149,13 +151,6 @@ flash: $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).elf
 $(BUILD_DIR)/$(BUILD_MODE): $(BUILD_DIR)
 	@mkdir $(BUILD_DIR)/$(BUILD_MODE)
 	@mkdir $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)
-# build_dir: $(OBJ_DIR)
-
-# $(OBJ_DIR): | $(BUILD_MODE)
-# 	@mkdir $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)
-	
-# $(BUILD_MODE): | $(BUILD_DIR)
-# 	@mkdir $(BUILD_DIR)/$(BUILD_MODE)
 
 $(BUILD_DIR):
 	@mkdir $(BUILD_DIR)

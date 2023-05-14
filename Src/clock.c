@@ -5,10 +5,10 @@
 // const uint8_t AHBPrescallerTable[16U] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
 // const uint8_t APBPrescallerTable[8U] =  {0, 0, 0, 0, 1, 2, 3, 4};
 
-#define GetHCLKFreq(__SysCLKFreq, AHBPrescaller) ((__SysCLKFreq) >> AHBPrescTable[((AHBPrescaller) & RCC_CFGR_HPRE) >> 4U])
-#define GetPCLK1Freq(__HCLKFreq, APB1Prescaller) ((__HCLKFreq) >> APBPrescTable[(APB1Prescaller) >> 8U])
-#define GetPCLK2Freq(__HCLKFreq, APB2Prescaller) ((__HCLKFreq) >> APBPrescTable[(APB2Prescaller) >> 11U])
-#define GetPLLCLKFreq(__INPUTFREQ__, __PLLMUL__) ((__INPUTFREQ__) * (((__PLLMUL__) >> RCC_CFGR_PLLMULL_Pos) + 2U))
+#define GetHCLKFreq(__SysCLKFreq, __AHBPrescaller) ((__SysCLKFreq) >> AHBPrescTable[((__AHBPrescaller) & RCC_CFGR_HPRE) >> 4U])
+#define GetPCLK1Freq(__HCLKFreq, __APB1Prescaller) ((__HCLKFreq) >> APBPrescTable[(__APB1Prescaller) >> 8U])
+#define GetPCLK2Freq(__HCLKFreq, __APB2Prescaller) ((__HCLKFreq) >> APBPrescTable[(__APB2Prescaller) >> 11U])
+#define GetPLLCLKFreq(__INPUTFREQ, __PLLMUL) ((__INPUTFREQ) * (((__PLLMUL) >> RCC_CFGR_PLLMULL_Pos) + 2U))
 
 void InitSysClockHSE8(void)
 {
@@ -133,17 +133,29 @@ uint32_t GetSysClk(void)
 }
 uint32_t GetHCLKClkFreq(void)
 {
-    return GetHCLKFreq(GetSysClk(), RCC->CFGR & RCC_CFGR_HPRE);
+    return GetHCLKFreq(
+        GetSysClk(), 
+        RCC->CFGR & RCC_CFGR_HPRE);
 }
 
 uint32_t GetPCLK1ClkFreq(void)
 {
-    return GetPCLK1Freq(GetHCLKClkFreq(), RCC->CFGR & RCC_CFGR_PPRE1);
+    return GetPCLK1Freq(
+        GetHCLKFreq(
+            GetSysClk(), 
+            RCC->CFGR & RCC_CFGR_HPRE), 
+        RCC->CFGR & RCC_CFGR_PPRE1);
 }
 
 uint32_t GetPCLK2ClkFreq(void)
 {
-    return GetPCLK2Freq(GetHCLKClkFreq(), RCC->CFGR & RCC_CFGR_PPRE2);
+    return GetPCLK2Freq(
+        GetPCLK1Freq(
+            GetHCLKFreq(
+                GetSysClk(), 
+                RCC->CFGR & RCC_CFGR_HPRE), 
+            RCC->CFGR & RCC_CFGR_PPRE1), 
+        RCC->CFGR & RCC_CFGR_PPRE2);
 }
 
 void GetClocks(RCC_ClkTypeDef *Clocks)
