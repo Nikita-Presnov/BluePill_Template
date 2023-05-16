@@ -27,17 +27,16 @@ Run in a terminal.
 make
 ```
 For debug mode 
-```bash
-DEBUG=1 make
-```
-or 
+
 ```bash
 make debug
 ```
 
 Not tested on Windows, but should work.
 
-Firmware `firmware.elf` will be in the `Build/Release` directory.
+Firmware `firmware.elf` will be in the `Build` directory.
+
+To switch release and debug clean project.
 
 To build .hex
 ```bash
