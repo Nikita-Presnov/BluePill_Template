@@ -4,7 +4,7 @@
         {
             "label": "make debug",
             "type": "shell",
-            "command": "DEBUG=1 make",
+            "command": "make debug",
             "group": "build",
             "problemMatcher": "$gcc"
         },

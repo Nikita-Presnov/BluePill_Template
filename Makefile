@@ -64,16 +64,16 @@ endif
 
 # GCC
 
-ifdef DEBUG
+# ifdef DEBUG
 # $(info [info] debug mode)
-CFLAGS  = -g -Og 
-BUILD_MODE = $(DEBUG_DIR)
-else
-# $(info [info] release mode)
-CFLAGS  = -O2
-BUILD_MODE = $(RELEASE_DIR)
-endif
-CFLAGS += -Wall -Wextra -Warray-bounds -std=c99 -lc -lgcc -lm
+# CFLAGS  = -g -Og 
+# BUILD_MODE = $(DEBUG_DIR)
+# else
+# $(info [info] nodebug mode)
+# CFLAGS  = -O2
+# BUILD_MODE = $(RELEASE_DIR)
+# endif
+CFLAGS = -Wall -Wextra -Warray-bounds -std=c99
 CFLAGS += -std=c11
 CFLAGS += -lc -lgcc -lm
 # Generate dependency information
@@ -82,7 +82,7 @@ CFLAGS += -MMD -MP
 # ARM
 CFLAGS += -mthumb -mlittle-endian -mthumb-interwork
 # CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 
-
+CFLAGS += -Wno-comment -Wno-unused-parameter
 # PROJECT
 CFLAGS += -mcpu=$(MODEL_CORE) 
 CFLAGS += -D$(MODEL)
@@ -95,62 +95,56 @@ LFLAGS = -Wl,--gc-sections -Wl,-T$(LD_SCRIPT) --specs=rdimon.specs
 ###############################################################################
 
 # Unlike the original source, this file throws object files into the correct directory.
-OBJECTS  = $(addprefix $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.c=.o)))
-OBJECTS += $(addprefix $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/,$(notdir $(ASM_FILES:.s=.o)))
-DEPENDS  = $(addprefix $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.c=.d)))
-DEPENDS += $(addprefix $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/,$(notdir $(ASM_FILES:.s=.d)))
-.PHONY: all clean flash
+OBJECTS  = $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.c=.o)))
+OBJECTS += $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(ASM_FILES:.s=.o)))
+DEPENDS  = $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(CXX_FILES:.c=.d)))
+DEPENDS += $(addprefix $(BUILD_DIR)/$(OBJ_DIR)/,$(notdir $(ASM_FILES:.s=.d)))
+.PHONY: clean
 vpath %.c $(sort $(dir $(CXX_FILES)))
 vpath %.s $(sort $(dir $(ASM_FILES)))
 # .PHONY: clean
-
-all: $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).elf
+all: CFLAGS += -O2
+all: $(BUILD_DIR)/$(TARGET).elf
 # all: make 
-debug:
-	@echo "[info] debug mode"
-	@DEBUG=1 make
+debug: CFLAGS += -g -Og 
+debug: $(BUILD_DIR)/$(TARGET).elf
 
-release:
-	@echo "[info] release mode"
-	@make
-	
 -include $(DEPENDS)
 # Compile asm
-$(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/%.o: %.s Makefile | $(BUILD_DIR)/$(BUILD_MODE)
-	@echo "[AS] $<"
+$(BUILD_DIR)/$(OBJ_DIR)/%.o: %.s Makefile | $(BUILD_DIR)/$(OBJ_DIR)
+	@echo "[AS] $< -> $@"
 	@$(AS) -c $< -o $@ $(CFLAGS)
 
 # Compile c
-$(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)/%.o: %.c Makefile | $(BUILD_DIR)/$(BUILD_MODE)
-	@echo "[CC] $<"
+$(BUILD_DIR)/$(OBJ_DIR)/%.o: %.c Makefile | $(BUILD_DIR)/$(OBJ_DIR)
+	@echo "[CC] $< -> $@"
 	@$(CC) -c $< -o $@ $(CFLAGS)
 
 # Link
-$(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).elf: $(OBJECTS) Makefile
-	@echo "[LD] $@"
+$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
+	@echo "[LD] $@ $(DEBUG)"
 	@$(CC) -o $@ $(CFLAGS) $(LFLAGS) $(OBJECTS) 
 	@$(SZ) $@
 
-$(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).hex: $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).elf
+$(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).elf
 	@echo "[HEX] $@"
 	@$(HEX) $< $@
 	@$(SZ) $@
 
-$(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).bin: $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).elf
+$(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
 	@echo "[BIN] $@"
 	@$(BIN) $< $@
 
-intel-hex: $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).hex
+intel-hex: $(BUILD_DIR)/$(TARGET).hex
 
-binary: $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).bin
+binary: $(BUILD_DIR)/$(TARGET).bin
 
-flash: $(BUILD_DIR)/$(BUILD_MODE)/$(TARGET).elf
+flash: $(BUILD_DIR)/$(TARGET).elf
 	openocd -f ./openocd.cfg -c "init; reset halt; flash write_image erase $<; reset; exit"
 
 # Make directory
-$(BUILD_DIR)/$(BUILD_MODE): $(BUILD_DIR)
-	@mkdir $(BUILD_DIR)/$(BUILD_MODE)
-	@mkdir $(BUILD_DIR)/$(BUILD_MODE)/$(OBJ_DIR)
+$(BUILD_DIR)/$(OBJ_DIR): | $(BUILD_DIR)
+	@mkdir $(BUILD_DIR)/$(OBJ_DIR)
 
 $(BUILD_DIR):
 	@mkdir $(BUILD_DIR)
