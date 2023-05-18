@@ -1,6 +1,7 @@
 #ifndef __TASK_H__
 #define __TASK_H__
 // #include <stddef.h>
+#include <stdint.h>
 #define TSK 5 // count of task
 
 typedef struct TASK_TypeDef

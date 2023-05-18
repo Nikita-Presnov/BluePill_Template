@@ -106,7 +106,7 @@ vpath %.s $(sort $(dir $(ASM_FILES)))
 all: CFLAGS += -O2
 all: $(BUILD_DIR)/$(TARGET).elf
 # all: make 
-debug: CFLAGS += -g -Og 
+debug: CFLAGS += -g -Og -DDEBUG
 debug: $(BUILD_DIR)/$(TARGET).elf
 
 -include $(DEPENDS)
@@ -122,7 +122,7 @@ $(BUILD_DIR)/$(OBJ_DIR)/%.o: %.c Makefile | $(BUILD_DIR)/$(OBJ_DIR)
 
 # Link
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
-	@echo "[LD] $@ $(DEBUG)"
+	@echo "[LD] $@"
 	@$(CC) -o $@ $(CFLAGS) $(LFLAGS) $(OBJECTS) 
 	@$(SZ) $@
 
@@ -151,7 +151,7 @@ $(BUILD_DIR):
 
 # Clean
 clean:
-	@rm -rfv $(BUILD_DIR)
+	@rm $(BUILD_DIR)/$(TARGET)* $(BUILD_DIR)/$(OBJ_DIR)/*
 # @rm $(BUILD_DIR)/$(DEBUG_DIR)/$(TARGET)* \
 # 	$(BUILD_DIR)/$(RELEASE_DIR)/$(TARGET)* \
 # 	$(BUILD_DIR)/$(DEBUG_DIR)/$(OBJ_DIR)/* \
