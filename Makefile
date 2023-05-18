@@ -4,7 +4,7 @@
 # Path to the codebase, make sure to update the submodule to get the code
 # PERIPH_LIB = PeripheralLib
 CMSIS_ROOT = CMSIS
-USB = USBLib
+# USB = USBLib
 ###############################################################################
 
 # Project specific
