@@ -1,3 +1,4 @@
+#include "stm32f1xx.h"
 #include "led.h"
 void InitLed(void)
 {

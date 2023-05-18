@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "usb_lib.h"
 #include "pinmacro.h"
-#include "hardware.h"
+#include "pinmacro.h"
 void ConfigGPIOpin(GPIO_TypeDef *GPIOx, uint8_t pin, uint8_t mode)
 {
     if (pin < 8)

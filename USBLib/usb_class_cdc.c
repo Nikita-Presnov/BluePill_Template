@@ -1,7 +1,7 @@
 #include "usb_lib.h"
 #include <wchar.h>
 // #include <stdint.h>
-#include "hardware.h"
+#include "pinmacro.h"
 #include "usb_defs.h"
 
 USB_ALIGN static const uint8_t USB_DeviceDescriptor[] = {
