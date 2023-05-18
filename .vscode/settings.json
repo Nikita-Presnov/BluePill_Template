@@ -5,7 +5,9 @@
         "*.py": "python",
         "*.ld": "linkerscript",
         "*.h": "c",
-        "numeric": "c"
+        "numeric": "c",
+        "exception": "c",
+        "new": "c"
     },
     "cortex-debug.gdbPath": "gdb-multiarch",
     "cortex-debug.variableUseNaturalFormat": true

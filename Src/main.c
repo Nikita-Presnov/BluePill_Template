@@ -28,7 +28,7 @@ int main()
     NVIC_EnableIRQ(USART1_IRQn);
     NVIC_EnableIRQ(TIM2_IRQn);
     __enable_irq();
-
+    // __ASM volatile("bkpt");
     USARTSendStr("ok\n");
     // USB_ALIGN uint8_t buf[ENDP_DATA_SIZE];
     while (1)
