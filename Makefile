@@ -144,10 +144,10 @@ flash: $(BUILD_DIR)/$(TARGET).elf
 
 # Make directory
 $(BUILD_DIR)/$(OBJ_DIR): | $(BUILD_DIR)
-	@mkdir $(BUILD_DIR)/$(OBJ_DIR)
+	@mkdir $@
 
 $(BUILD_DIR):
-	@mkdir $(BUILD_DIR)
+	@mkdir $@
 
 # Clean
 clean:

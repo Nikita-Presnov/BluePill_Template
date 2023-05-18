@@ -10,13 +10,13 @@ void ConfigGPIOpin(GPIO_TypeDef *GPIOx, uint8_t pin, uint8_t mode)
 {
     if (pin < 8)
     {
-        GPIOx->CRL &= ~(GPIO_MASK << ((pin) * 4));
-        GPIOx->CRL |= (mode & GPIO_MASK) << ((pin) * 4);
+        GPIOx->CRL &= ~(GPIO_MASK << ((pin) << 2));
+        GPIOx->CRL |= (mode & GPIO_MASK) << ((pin) << 2);
     }
     else if (pin >= 8 && pin < 16)
     {
-        GPIOx->CRH &= ~(GPIO_MASK << ((pin - 8) * 4));
-        GPIOx->CRH |= (mode & GPIO_MASK) << ((pin - 8) * 4);
+        GPIOx->CRH &= ~(GPIO_MASK << ((pin - 8) << 2));
+        GPIOx->CRH |= (mode & GPIO_MASK) << ((pin - 8) << 2);
     }
 }
 #ifndef NULL
@@ -118,12 +118,9 @@ void USB_setup()
     USB->CNTR = USB_CNTR_PDWN;
     ConfigGPIOpin(GPIOA, GPIO_USB_DP, GPIO_OD50);
     GPIOA->BSRR = ((1 << GPIO_USB_DP) << (1*16));
-    // GPIO_manual(USB_DP, GPIO_OD50);
-    // GPO_OFF(USB_DP);
     for (uint32_t ctr = 0; ctr < 100000; ++ctr)
         asm volatile("nop"); // wait >1ms
     ConfigGPIOpin(GPIOA, GPIO_USB_DP, GPIO_HIZ);
-    // GPIO_manual(USB_DP, GPIO_HIZ);
 #else
 #error USB_PULLUP undefined
 #endif

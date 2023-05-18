@@ -1,9 +1,23 @@
 #include "stm32f1xx.h"
 #include "task.h"
+// #include <malloc.h>
+#ifndef NULL
 #define NULL ((void *)0)
+#endif
+
+
+typedef struct TASK_TypeDef
+{
+    uint32_t loop;
+    uint32_t period;
+    uint32_t counter;
+    void (*handler)(void);
+    // TASK_TypeDef *next;
+} TASK_TypeDef;
 
 TASK_TypeDef task[TSK];
-
+// TASK_TypeDef *task;
+// __IO uint32_t task_number;
 __IO uint32_t load_cpu;
 __IO uint32_t current_load;
 
@@ -29,7 +43,14 @@ void SysTick_Handler(void)
     }
     current_load += (72000 - SysTick->VAL);
 }
+void TaskDelay(int ms)
+{
+    // for(int i = ms; i>0; i++);
+}
+void StartLoop()
+{
 
+}
 void RemoveTask(uint8_t num)
 {
     for (uint8_t i = num; i < (TSK - 2); i++)
